@@ -2,11 +2,11 @@
   "crons": [
     {
       "path": "/api/cron/prices",
-      "schedule": "*/15 * * * *"
+      "schedule": "0 12 * * *"
     },
     {
       "path": "/api/cron/valuations",
-      "schedule": "0 */4 * * *"
+      "schedule": "0 23 * * *"
     }
   ]
 }
