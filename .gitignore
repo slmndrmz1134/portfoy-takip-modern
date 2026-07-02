@@ -9,3 +9,6 @@ build/
 *.tsbuildinfo
 .expo/
 .vercel/
+
+.vercel
+.env*

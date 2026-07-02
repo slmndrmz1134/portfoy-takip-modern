@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { derivePortfolio, fetchFxRateToTry, type Market } from "@portfoy/core";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { getSupabaseServiceClient } from "@/lib/supabase";
 import { mapDbRowToTransaction } from "@/lib/mapDbRowToTransaction";
 
 async function requireUser() {
@@ -65,7 +66,8 @@ async function ensureInstrument(
   const currency = currencyForMarket(market, symbol);
   const type = market === "FX" ? "CURRENCY" : market === "GOLD" ? "GOLD" : "STOCK";
 
-  const { error } = await supabase.from("instruments").insert({ symbol, name, market, type, currency });
+  const adminClient = getSupabaseServiceClient();
+  const { error } = await adminClient.from("instruments").insert({ symbol, name, market, type, currency });
   if (error) throw new Error(`Enstrüman eklenemedi: ${error.message}`);
 }
 

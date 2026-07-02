@@ -1,6 +1,7 @@
 import type { RawPrice } from "./types";
 import { fetchFinnhubPrice } from "./finnhub";
 import { fetchBistPrice } from "./bist";
+import { fetchYahooPrice } from "./yahoo";
 import { fetchFxRateToTry } from "./tcmb";
 import { fetchGoldPrice } from "./gold";
 import type { Market } from "../types";
@@ -27,10 +28,16 @@ export async function resolvePrice(
   config: ResolvePriceConfig = {},
 ): Promise<RawPrice | null> {
   switch (market) {
-    case "US":
-      return fetchFinnhubPrice(symbol, config.finnhubApiKey ?? "");
-    case "BIST":
-      return fetchBistPrice(symbol);
+    case "US": {
+      const usPrice = await fetchFinnhubPrice(symbol, config.finnhubApiKey ?? "");
+      if (usPrice) return usPrice;
+      return fetchYahooPrice(symbol);
+    }
+    case "BIST": {
+      const bistPrice = await fetchBistPrice(symbol);
+      if (bistPrice) return bistPrice;
+      return fetchYahooPrice(`${symbol}.IS`);
+    }
     case "FX":
       return fetchFxRateToTry(symbol);
     case "GOLD":
